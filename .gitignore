@@ -1,0 +1,12 @@
+# Python bytecode files
+*.pyc
+__pycache__/
+
+# Log files
+*.log
+
+# Environment files
+.env
+
+# Custom files or directories
+pkg/completed/
