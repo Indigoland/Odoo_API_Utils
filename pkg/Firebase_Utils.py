@@ -51,7 +51,7 @@ def push_to_firebase(collection_name, document_id, data):
         db = firestore.client()  # Get Firestore client
         doc_ref = db.collection(collection_name).document(document_id)  # Specify the collection and document
         doc_ref.set(data)  # Push the data to Firestore
-        print(f"Data successfully written to {collection_name}/{document_id}")
+        # print(f"Data successfully written to {collection_name}/{document_id}")
     except Exception as e:
         print(f"Failed to write data to Firebase: {str(e)}")
 

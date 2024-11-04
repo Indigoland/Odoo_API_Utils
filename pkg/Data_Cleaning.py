@@ -1,4 +1,3 @@
-import re
 
 # Mapping dictionary for couriers
 delivery_type_mapping = {

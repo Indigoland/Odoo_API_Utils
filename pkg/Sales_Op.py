@@ -49,7 +49,7 @@ def fetch_sale_operation_panel():
             print("Error fetching sale operation panel records:")
             print(json.dumps(data['error'], indent=2))
         else:
-            print("Sale Operation Panel records fetched")
+            print("Sale Operation Panel records fetched.")
 
             # Loop through each sale operation record and fetch its related order lines
             for order in data['result']:
@@ -64,6 +64,8 @@ def fetch_sale_operation_panel():
                         # print(f"Order Lines for Sale Order {sale_order_id}:")
                         # print(json.dumps(order_lines, indent=2))
                         pass
+
+            print("Order lines all fetched.")
 
         return data
     except requests.exceptions.RequestException as e:
@@ -109,7 +111,7 @@ def clean_and_combine_sale_operation_panel():
                 # Add the combined order to the list
                 combined_orders.append(combined_order)
 
-        # print(f"Combined Sale Orders and Order Lines: {combined_orders}")
+        print("Sale Orders and Order Lines are cleaned and combined.")
         return combined_orders
     
 
@@ -138,23 +140,34 @@ def firebase_upload_sale_operation_panel():
     to_update = existing_order_ids & new_order_ids
     to_create = new_order_ids - existing_order_ids
 
-    # Delete orders that are no longer in the new data
-    delete_firebase_documents('weeklyorders_odoo', to_delete)
-
     # Update existing orders in Firebase with new data
-    for order_id in to_update:
-        existing_data = existing_orders[order_id]
+    if to_update:
+        for order_id in to_update:
+            existing_data = existing_orders[order_id]
         
-        # Only update the fields present in new_order_data without overwriting others
-        merged_data = {**existing_data, **new_order_data[order_id]}
+            # Only update the fields present in new_order_data without overwriting others
+            merged_data = {**existing_data, **new_order_data[order_id]}
         
-        push_to_firebase('weeklyorders_odoo', order_id, merged_data)
-        print(f"Order {order_id} updated in Firebase.")
+            push_to_firebase('weeklyorders_odoo', order_id, merged_data)
+            print(f"Order {order_id} updated in Firebase.")
+    else:
+        print("No orders need to be updated.")
 
+    
     # Create new orders in Firebase that do not exist in the collection
-    for order_id in to_create:
-        push_to_firebase('weeklyorders_odoo', order_id, new_order_data[order_id])
-        print(f"Order {order_id} created in Firebase.")
+    if to_create:
+        for order_id in to_create:
+            push_to_firebase('weeklyorders_odoo', order_id, new_order_data[order_id])
+            print(f"Order {order_id} created in Firebase.")
+    else:
+        print("No new orders need to be created.")
+
+    # Delete orders that are no longer in the new data
+    if to_delete:
+        delete_firebase_documents('weeklyorders_odoo', to_delete)
+    else:
+        print("No orders need to be deleted.")
+        
 
     print("Firebase synchronization complete.")
 
