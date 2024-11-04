@@ -1,4 +1,3 @@
-import os
 import json
 import firebase_admin
 from firebase_admin import credentials, firestore
@@ -6,13 +5,13 @@ from firebase_admin import credentials, firestore
 # Initialize Firebase Admin SDK
 firebase_app = None
 
+# Read credentials from json and initialize firebase
 def initialize_firebase():
     global firebase_app
     if not firebase_app:
-        # Load Firebase credentials from the JSON file
-        firebase_credentials = os.getenv('FIREBASE_CREDENTIALS')
-        cred_dict = json.loads(firebase_credentials)
-        cred = credentials.Certificate(cred_dict) 
+        with open('./firebase_credentials.json', 'r') as f:
+            cred_dict = json.load(f)
+        cred = credentials.Certificate(cred_dict)
         firebase_app = firebase_admin.initialize_app(cred)
         print("Firebase initialized successfully.")
     else:
