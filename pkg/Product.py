@@ -4,6 +4,23 @@ import json
 from .Authenticate import authenticate,odoo_db,odoo_password,odoo_url
 from .Firebase_Utils import initialize_firebase, push_to_firebase
 
+product_tag_mapping = {
+1: 'Zone C',
+2: 'Zone A',
+3: 'Zone F',
+4: 'Zone E',
+5: 'Zone D',
+6: 'Cave',
+7: 'Device',
+8: 'For Import',
+9: 'Accessories',
+10: 'so the easiest/most efficient way',
+11: 'Service',
+12: 'Other',
+13: 'System',
+14: 'Component'
+}
+
 
 # Function to fetch the product list (from 'product.product' model)
 def fetch_product_list(verbose=False):
@@ -20,12 +37,12 @@ def fetch_product_list(verbose=False):
             "method": "execute_kw",
             "args": [
                 odoo_db,  
-                user_id,  # Authenticated user ID
+                user_id,  
                 odoo_password,  
                 "product.product",  # Model to interact with
                 "search_read",  # Method 
                 [
-                    [("product_tag_ids","in",(11,12,13))],                             # No domain filter 
+                    [("product_tag_ids","in",(7))],                   # Fetch product which has 'Device' tag  
                     ["id", "default_code", "name","product_tag_ids"]  # Fields to retrieve 
                 ],
                 { 
@@ -62,25 +79,6 @@ def fetch_product_list(verbose=False):
 
 
 
-product_tag_mapping = {
-1: 'Zone C',
-2: 'Zone A',
-3: 'Zone F',
-4: 'Zone E',
-5: 'Zone D',
-6: 'Cave',
-7: 'Device',
-8: 'For Import',
-9: 'Accessories',
-10: 'so the easiest/most efficient way',
-11: 'Service',
-12: 'Other',
-13: 'System',
-14: 'Component'
-}
-
-
-
 def firebase_upload_product_list():
     
     initialize_firebase()
@@ -106,9 +104,9 @@ def firebase_upload_product_list():
 
 
         product_id = cleaned_product.get('id')
-        push_to_firebase('packing_ignore_list',str(product_id),cleaned_product)
+        push_to_firebase('devices_list',str(product_id),cleaned_product)
 
-    print('Fetch completed')
+    print('Update completed')
 
 
 

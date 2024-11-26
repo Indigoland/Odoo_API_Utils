@@ -24,8 +24,8 @@ def fetch_order_lines_for_order(order_id):
                 "sale.order.line",  # Model to fetch order lines
                 "search_read",  # Method to read data
                 [
-                    [('order_id', '=', order_id)],  # Domain to fetch order lines for the given sale order ID
-                    ["id", "product_id", "product_uom_qty", "price_unit", "is_refurbished", "serial_number"]
+                    [('order_id', '=', order_id),('x_product_tag_ids','not in',[11,12,13])],  # Domain to fetch order lines for the given sale order ID                                                                          # Exclude the 'Service','System' and 'Other' product tags 
+                    ["id", "product_id", "product_uom_qty", "is_refurbished", "serial_number"]
                 ],
                 {   
                     "limit": None,  # Fetch all order lines for this order
